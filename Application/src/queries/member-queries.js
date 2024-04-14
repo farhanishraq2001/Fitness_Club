@@ -31,7 +31,7 @@ const getTrainingSessions = `SELECT *
                             LEFT JOIN members_schedule m
                                 ON m.session_id=t.session_id
                             WHERE date=$1 AND start_time=$2 AND member_id=$3;`;
-const getAllTrainingSessionsForMember = `SELECT *
+const getAllPersonalTrainingSessions = `SELECT *
                                 FROM training_sessions t
                                 LEFT JOIN members_schedule m
                                     ON m.session_id=t.session_id
@@ -39,7 +39,7 @@ const getAllTrainingSessionsForMember = `SELECT *
                                     ON tr.trainer_id=t.trainer_id
                                 LEFT JOIN rooms r
                                     ON r.room_id=t.room_id
-                                WHERE member_id=$1;`;  
+                                WHERE member_id=$1 AND session_type='personal';`;  
 const createSession = `INSERT INTO training_sessions(date, start_time, end_time, session_type, trainer_id, room_id) VALUES ($1, $2, $3, $4, $5, $6) RETURNING session_id`;
 const updateSession =  `UPDATE training_sessions
                         SET date=$2, start_time=$3, end_time=$4, session_type=$5, trainer_id=$6, room_id=$7
@@ -118,7 +118,7 @@ module.exports = {
     createSession,
     updateSession,
     addToMembersSchedule,
-    getAllTrainingSessionsForMember,
+    getAllPersonalTrainingSessions,
     getAllGroupTrainingSessions,
     getAllTrainingSessions,
 

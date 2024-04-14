@@ -9,7 +9,7 @@ router.get('/', controller.initPage);
 router.get('/getMemberById', controller.getMemberById);
 router.get('/loginValidation', controller.loginValidation);
 router.get('/getFitnessGoals', controller.getFitnessGoals);
-router.get('/getAllTrainingSessionsForMember', controller.getAllTrainingSessionsForMember);
+router.get('/getAllPersonalTrainingSessions', controller.getAllPersonalTrainingSessions);
 router.get('/getAllTrainingSessions', controller.getAllGroupTrainingSessions);
 router.get('/getAvailableTrainers', controller.getAvailableTrainers);
 router.get('/getAvailableRooms', controller.getAvailableRooms);

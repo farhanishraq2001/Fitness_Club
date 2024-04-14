@@ -105,7 +105,7 @@ function login(event) {
                     // Access the adminId from the parsed JSON data
                     fillUpdateMember(data[0]);
                     // console.log(adminId); // Do something with the adminId
-                    fetch("http://localhost:3000/members/getAllTrainingSessionsForMember?id="+data[0].member_id, {
+                    fetch("http://localhost:3000/members/getAllPersonalTrainingSessions?id="+data[0].member_id, {
                         method: 'GET'
                     })
                     .then(response => {
@@ -406,10 +406,17 @@ function populatePersonalSessions(sessions) {
         let deleteBtn = `<td onclick="deleteSession(${sessionID})" class="deleteBtn">Delete</td>`
         row.innerHTML += deleteBtn;
 
+        let updateBtn = `<td onclick="updateSession(${sessionID})" class="updateBtn">Update</td>`
+        row.innerHTML += updateBtn;
+
         // Append the row to the table
         let validation = document.getElementById(sessionID);
         table.appendChild(row);
     }
+}
+
+function updateSession(id) {
+    console.log("Delete session with id: "+id);
 }
 
 // Adds to student DB by making a POST request to the REST api created

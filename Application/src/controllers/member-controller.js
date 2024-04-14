@@ -155,11 +155,11 @@ const addFitnessGoals = async (req, res) => {
     }
 }
 
-const getAllTrainingSessionsForMember = async (req, res) => {
+const getAllPersonalTrainingSessions = async (req, res) => {
     const id = req.query.id;
 
     try {
-        const {rows} = await pool.query(queries.getAllTrainingSessionsForMember, [id]);
+        const {rows} = await pool.query(queries.getAllPersonalTrainingSessions, [id]);
         res.status(200).json(rows);
     } catch (err) {
         // Handle other errors
@@ -332,7 +332,7 @@ module.exports = {
     updateMember,
     getFitnessGoals,
     addFitnessGoals,
-    getAllTrainingSessionsForMember,
+    getAllPersonalTrainingSessions,
     getAllGroupTrainingSessions,
     createSession,
     updateSession,
