@@ -35,6 +35,10 @@ const getAllTrainingSessionsForMember = `SELECT *
                                 FROM training_sessions t
                                 LEFT JOIN members_schedule m
                                     ON m.session_id=t.session_id
+                                LEFT JOIN trainers tr
+                                    ON tr.trainer_id=t.trainer_id
+                                LEFT JOIN rooms r
+                                    ON r.room_id=t.room_id
                                 WHERE member_id=$1;`;  
 const createSession = `INSERT INTO training_sessions(date, start_time, end_time, session_type, trainer_id, room_id) VALUES ($1, $2, $3, $4, $5, $6) RETURNING session_id`;
 const updateSession =  `UPDATE training_sessions

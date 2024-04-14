@@ -44,6 +44,7 @@
     </form>
 
     <form id="updateMember" style="display:none;">
+      <h3>Member Profile</h3>
       <input type="text" id="update_member_email" name="member_email" placeholder="Member Email"><br><br>
       <input type="password" id="update_password" name="password" placeholder="Password"><br><br>
       <input type="text" id="update_fname" name="fname" placeholder="First Name"><br><br>
@@ -59,15 +60,33 @@
       <label for="expiry_date">Credit Card Expiry Date:</label>
       <input type="date" id="update_expiry_date" name="expiry_date" placeholder="Expiry Date"><br><br>
   
-      <input type="button" id="btnSubmitUpdate" value="Submit" />
-  </form>
+      <input type="button" id="btnSubmitUpdate" value="Update" />
+    </form>
+    <br><br>
+    <form id="scheduleManagement" style="display:none; clear:both; margin-top: 20px;">
+      <h3>Schedule Management</h3>
+      <h4>Schedule Personal Training Session</h4>
+      <label for="DOB">Select date:</label>
+      <input type="date" id="sessionDate" name="DOB"><br><br>
+      <label for="expiry_date">Session start time:</label>
+      <input type="time" id="sessionStartTime" name="expiry_date"><br><br>
+      <label for="expiry_date">Session end time:</label>
+      <input type="time" id="sessionEndTime" name="expiry_date"><br><br>
+
+      <label for="selectAvailableTrainers">Select Available Trainers: </label>
+      <select id="selectAvailableTrainers" name="selectAvailableTrainers"></select><br><br>
+      <label for="selectAvailableRooms">Select Available Rooms: </label>
+      <select id="selectAvailableRooms" name="selectAvailableRooms"></select><br><br>
+  
+      <input type="button" id="btnSubmitSearch" value="Search" /><br><br>
+    </form>
 
     <form id="login" style="display:none;">
       <input type="text" id="login_member_email" name="login_member_email" placeholder="Member Email"><br><br>
       <input type="password" id="login_password" name="login_password" placeholder="Password"><br><br>
   
       <input type="button" id="btnSubmitLogin" value="Submit" />
-  </form>
+    </form>
 
       <form id="emailChange" style="display:none;">
         <label for="studentId">Student ID:</label>
@@ -78,21 +97,22 @@
         <input type="submit" id="btnSubmitEmail" value="Submit" />
         <input type="submit" id="btnHideEmail" value="Hide" />
       </form>
-
-        <div id="buttons1" style="display:none;">
+      <br><br>
+        <div id="buttons1" style="display:none; clear:both;">
             <!-- <button type="submit" id="btnShowStudents">Show Students</button>
             <button type="submit" id="btnAddStudents">Add Student</button>
             <button type="submit" id="btnChangeEmail">Change Email</button> -->
             <!-- <button type="submit" id="btnDeleteStudents">Delete Students</button> -->
-
+              
             <div id="students">
+              <h4>Personal Training Session Created</h4>
               <table id="studentsTable">
                   <!-- <tr>
-                      <th>Student ID</th>
-                      <th>First name</th>
-                      <th>Last name</th>
-                      <th>Email</th>
-                      <th>Enrollment Date</th>
+                      <th>Date</th>
+                      <th>Start Time</th>
+                      <th>End Time</th>
+                      <th>Trainer</th>
+                      <th>Room</th>
                   </tr>  -->
               </table>
             </div>

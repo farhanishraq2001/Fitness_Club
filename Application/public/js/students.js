@@ -25,25 +25,11 @@ function initializePage(){
     btnSubmitLogin.addEventListener("click", ()=>{login(event)});
     // hideAddBtn.addEventListener('click', () => {hideForm(event, "addStudent")});
 
-    // submitEmailBtn.addEventListener('click', emailChangeSubmit);
-    // let hideAddBtn = document.getElementById("btnHideAdd");
-    // let submitAddBtn = document.getElementById("btnSubmitAdd");
-    
-    // let emailChangeBtn = document.getElementById("btnChangeEmail");
-    // let hideEmailBtn = document.getElementById("btnHideEmail");
-    // let submitEmailBtn = document.getElementById("btnSubmitEmail");
+    let btnSubmitUpdate = document.getElementById("btnSubmitUpdate");
+    btnSubmitUpdate.addEventListener('click', updateForm);
 
-    // emailChangeBtn.addEventListener('click', () => {showForm(event, "emailChange")});
-    // emailChangeBtn.addEventListener('click', () => {hideForm(event, "addStudent")});
-    // hideEmailBtn.addEventListener('click', () => {hideForm(event, "emailChange")});
-    // submitEmailBtn.addEventListener('click', emailChangeSubmit);
-    
-    // addStudent.addEventListener('click', () => {showForm(event, "addStudent")});
-    // addStudent.addEventListener('click', () => {hideForm(event, "emailChange")});
-    // hideAddBtn.addEventListener('click', () => {hideForm(event, "addStudent")});
-    // submitAddBtn.addEventListener('click', addStudentSubmit);
-
-    // showStudents.addEventListener('click', getAllStudents);
+    let btnSubmitSearch = document.getElementById("btnSubmitSearch");
+    btnSubmitSearch.addEventListener('click', searchSession);
 }
 
 function login(event) {
@@ -51,8 +37,8 @@ function login(event) {
 
     let formData = {};
 
-    formData.member_email = document.getElementById('login_member_email').value;
-    formData.password = document.getElementById('login_password').value;
+    formData.member_email = document.getElementById('login_member_email').value.trim();
+    formData.password = document.getElementById('login_password').value.trim();
 
     for (const key in formData) {
         if (!formData[key]) {
@@ -68,7 +54,9 @@ function login(event) {
     let signUpForm = document.getElementById("addMember");
 
     let profile = document.getElementById("updateMember");
-
+    let scheduleManagement = document.getElementById("scheduleManagement");
+    let scheduleForUser = document.getElementById("buttons1");
+    
     console.log(formData);
 
     fetch(`http://localhost:3000/members/loginValidation?id=${formData.member_email}&password=${formData.password}`, {
@@ -99,8 +87,46 @@ function login(event) {
                 btnSignUp.style.display = "none";
 
                 profile.style.display = "block";
+                scheduleManagement.style.display = "block";
+                scheduleForUser.style.display = "block";
 
-                updateMember(formData.member_email);
+                fetch("http://localhost:3000/members/getMemberById?id="+formData.member_email, {
+                    method: 'GET'
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+
+                    console.log(response);
+                    return response.json(); // Parse the JSON response
+                })
+                .then(data => {
+                    // Access the adminId from the parsed JSON data
+                    fillUpdateMember(data[0]);
+                    // console.log(adminId); // Do something with the adminId
+                    fetch("http://localhost:3000/members/getAllTrainingSessionsForMember?id="+data[0].member_id, {
+                        method: 'GET'
+                    })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+    
+                        console.log(response);
+                        return response.json(); // Parse the JSON response
+                    })
+                    .then(data => {
+                        console.log(data);
+                        populatePersonalSessions(data);
+                    })
+                })
+                .catch(error => {
+                    console.error('There was a problem with the fetch operation:', error);
+                });
+
+                
+                
             }
         });
     })
@@ -108,50 +134,175 @@ function login(event) {
     .catch(error => console.error('Error:', error));
 }
 
-function updateMember(email) {
+function fillUpdateMember(memberData) {
     // event.preventDefault();
 
+    console.log(memberData);
+
+    let formData = {};      
+
+    formData.member_email = document.getElementById('update_member_email');
+    formData.member_email.value = memberData.member_email;
+    formData.password = document.getElementById('update_password');
+    formData.password.value = memberData.password;
+    formData.first_name = document.getElementById('update_fname');
+    formData.first_name.value = memberData.first_name;
+    formData.last_name = document.getElementById('update_lname');
+    formData.last_name.value = memberData.last_name;
+    formData.DOB = document.getElementById('update_DOB');
+    formData.DOB.valueAsDate = new Date(memberData.dob);
+    formData.street = document.getElementById('update_street');
+    formData.street.value = memberData.street;
+    formData.city = document.getElementById('update_city');
+    formData.city.value = memberData.city;
+    formData.province = document.getElementById('update_province');
+    formData.province.value = memberData.province;
+    formData.postal_Code = document.getElementById('update_postal_Code');
+    formData.postal_Code.value = memberData.postal_code;
+    formData.card_number = document.getElementById('update_card_number');
+    formData.card_number.value = memberData.card_number;
+    formData.cvv = document.getElementById('update_cvv');
+    formData.cvv.value = memberData.cvv;
+    formData.expiry_date = document.getElementById('update_expiry_date');
+    formData.expiry_date.valueAsDate = new Date(memberData.expiry_date);
+
+    for (const key in formData) {
+        if (!formData[key]) {
+            alert('Error filling in all fields');
+            return;
+        }
+    }
+}
+
+function updateForm(event) {
+    event.preventDefault();
+
     let formData = {};
-
-    let adminId;
-
-    fetch("http://localhost:3000/members/getMemberById?id="+email, {
+    let memberId = fetch('http://localhost:3000/members/getMemberIdInSession', {
         method: 'GET'
     })
     .then(response => {
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
+        if(!response.ok) {
+            return response.json().then(message => {
+                window.alert(message.message);
+            });
         }
 
-        console.log(response);
-        return response.json(); // Parse the JSON response
-    })
-    .then(data => {
-        // Access the adminId from the parsed JSON data
-        adminId = data.adminId;
-        console.log(adminId); // Do something with the adminId
-    })
-    .catch(error => {
-        console.error('There was a problem with the fetch operation:', error);
+        return response.json().then(message => {
+            // window.alert(message);
+            return message.memberId;
+        });
     });
 
-    console.log(adminId);
+    formData.member_email = document.getElementById('update_member_email').value.trim();
+    formData.password = document.getElementById('update_password').value.trim();
+    formData.first_name = document.getElementById('update_fname').value.trim();
+    formData.last_name = document.getElementById('update_lname').value.trim();
+    formData.DOB = document.getElementById('update_DOB').value.trim();
+    formData.street = document.getElementById('update_street').value.trim();
+    formData.city = document.getElementById('update_city').value.trim();
+    formData.province = document.getElementById('update_province').value.trim();
+    formData.postal_Code = document.getElementById('update_postal_Code').value.trim();
+    formData.card_number = document.getElementById('update_card_number').value.trim();
+    formData.cvv = document.getElementById('update_cvv').value.trim();
+    formData.expiry_date = document.getElementById('update_expiry_date').value.trim();
 
-    formData.member_email = document.getElementById('update_member_email').value;
-    formData.member_email = 
-    formData.password = document.getElementById('update_password').value;
-    formData.first_name = document.getElementById('update_fname').value;
-    formData.last_name = document.getElementById('update_lname').value;
-    formData.DOB = document.getElementById('update_DOB').value;
-    formData.street = document.getElementById('update_street').value;
-    formData.city = document.getElementById('update_city').value;
-    formData.province = document.getElementById('update_province').value;
-    formData.postal_Code = document.getElementById('update_postal_Code').value;
-    formData.card_number = document.getElementById('update_card_number').value;
-    formData.cvv = document.getElementById('update_cvv').value;
-    formData.expiry_date = document.getElementById('update_expiry_date').value;
+    for (const key in formData) {
+        if (!formData[key]) {
+            alert('Please fill in all fields');
+            return;
+        }
+    }
 
-        
+    memberId.then(memberId => {
+        formData.member_id = memberId; 
+        fetch('http://localhost:3000/members/updateMember', {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(formData)
+        })
+        .then(response => {
+            if(!response.ok) {
+                return response.json().then(message => {
+                    window.alert(message.message);
+                });
+            }
+
+            return response.json().then(message => {
+                window.alert(message.message);
+            });
+        })
+        .then(data => console.log(data))
+        .catch(error => console.error('Error:', error));
+    });
+
+    console.log(formData);
+}
+
+function searchSession() {
+    let scheduleManagement = document.getElementById("scheduleManagement");
+
+    let sessionDate = document.getElementById("sessionDate").value.trim();
+    let sessionStartTime = document.getElementById("sessionStartTime").value.trim();
+    let sessionEndTime = document.getElementById("sessionEndTime").value.trim();
+
+    let searchParams = {};
+    searchParams.date = sessionDate;
+    searchParams.startTime = sessionStartTime+':00';
+    searchParams.endTime = sessionEndTime+':00';
+
+    console.log(searchParams);
+
+    for (const key in searchParams) {
+        if (!searchParams[key]) {
+            alert('Please fill in all fields');
+            return;
+        }
+    }
+
+    Promise.all([
+        fetch(`http://localhost:3000/members/getAvailableTrainers?date=${searchParams.date}&startTime=${searchParams.startTime}&endTime=${searchParams.endTime}`, {
+            method: 'GET'
+        }), 
+        fetch(`http://localhost:3000/members/getAvailableRooms?date=${searchParams.date}`, {
+            method: 'GET'
+        })
+    ])
+    .then(responses => {
+        // Extract the JSON data from each response
+        return Promise.all(responses.map(response => response.json()));
+    })
+    .then(data => {
+        // Handle the data from both URLs
+        const data1 = data[0];
+        console.log('Data from URL 1:', data1);
+        let select = document.getElementById("selectAvailableTrainers");
+        select.innerHTML = '';
+        data[0].forEach(i => {
+            let option = document.createElement('option');
+            option.id = i.trainer_id;
+            option.innerHTML = i.first_name + ' ' + i.last_name;
+            select.appendChild(option);
+        });
+
+        const data2 = data[1];
+        console.log('Data from URL 2:', data2);
+        select = document.getElementById("selectAvailableRooms");
+        select.innerHTML = '';
+        data[1].forEach(i => {
+            let option = document.createElement('option');
+            option.id = i.room_id;
+            option.innerHTML = i.room_name;
+            select.appendChild(option);
+        });
+    })
+    .catch(error => {
+        // Handle any errors that occurred during fetching or parsing
+        console.error('Error fetching data:', error);
+    });
+
 }
 
 function addMember(event) {
@@ -159,18 +310,18 @@ function addMember(event) {
 
     let formData = {};
 
-    formData.member_email = document.getElementById('member_email').value;
-    formData.password = document.getElementById('password').value;
-    formData.first_name = document.getElementById('fname').value;
-    formData.last_name = document.getElementById('lname').value;
-    formData.DOB = document.getElementById('DOB').value;
-    formData.street = document.getElementById('street').value;
-    formData.city = document.getElementById('city').value;
-    formData.province = document.getElementById('province').value;
-    formData.postal_Code = document.getElementById('postal_Code').value;
-    formData.card_number = document.getElementById('card_number').value;
-    formData.cvv = document.getElementById('cvv').value;
-    formData.expiry_date = document.getElementById('expiry_date').value;
+    formData.member_email = document.getElementById('member_email').value.trim();
+    formData.password = document.getElementById('password').value.trim();
+    formData.first_name = document.getElementById('fname').value.trim();
+    formData.last_name = document.getElementById('lname').value.trim();
+    formData.DOB = document.getElementById('DOB').value.trim();
+    formData.street = document.getElementById('street').value.trim();
+    formData.city = document.getElementById('city').value.trim();
+    formData.province = document.getElementById('province').value.trim();
+    formData.postal_Code = document.getElementById('postal_Code').value.trim();
+    formData.card_number = document.getElementById('card_number').value.trim();
+    formData.cvv = document.getElementById('cvv').value.trim();
+    formData.expiry_date = document.getElementById('expiry_date').value.trim();
 
     for (const key in formData) {
         if (!formData[key]) {
@@ -204,76 +355,59 @@ function addMember(event) {
 }
 
 // Gets all the students by making a GET request to the REST api created
-function getAllStudents(){
-    fetch('http://localhost:3000/students/', {
-        method: 'GET',
-        headers: {
-            'Accept': 'application/json',
-        }
-    })
-    .then(response => response.json())
-    .then(data => populateStudents(data))
-    .catch(error => console.error('Error:', error));
-}
-
-function populateStudents(students) {
-    console.log(students);
+function populatePersonalSessions(sessions) {
+    console.log(sessions);
 
     let table = document.querySelector("table");
     console.log(table);
-    table.innerHTML = `<tr>
-                            <th>Student ID</th>
-                            <th>First name</th>
-                            <th>Last name</th>
-                            <th>Email</th>
-                            <th>Enrollment Date</th>
-                        </tr>`;
+    table.innerHTML =   `<tr>
+                            <th>Date</th>
+                            <th>Start Time</th>
+                            <th>End Time</th>
+                            <th>Trainer</th>
+                            <th>Room</th>
+                        </tr> `;
     console.log(table);
 
-    // Iterate through all the objects in the students array
-    for(let student of students){
+    // Iterate through all the objects in the sessions array
+    for(let session of sessions){
         // Save the information for the current in variables
-        let studentID = student.student_id;
-        let firstName = student.first_name;
-        let lastName = student.last_name;
-        let email = student.email;
-        let enrollmentDate = "N/A"; 
-        
-        if (student.enrollment_date != null) {
-            enrollmentDate = student.enrollment_date;
-            const indexOfT = enrollmentDate.indexOf('T');
-            const dateWithoutTime = enrollmentDate.substring(0, indexOfT);
-            enrollmentDate = dateWithoutTime;
-        }
+        let sessionID = session.session_id;
+        let date = session.date.split('T')[0];
+        // date = new Date(date);
+        let startTime = session.start_time;
+        let endTime = session.end_time;
+        let trainer = session.first_name + ' ' + session.last_name;
+        let room = session.room_name;
         
         let row = document.createElement("tr");
-        row.id = studentID;
+        row.id = sessionID;
 
-        let studentIdCell = document.createElement("td");
-        studentIdCell.textContent = studentID;
-        row.appendChild(studentIdCell);
+        let sessionIdCell = document.createElement("td");
+        sessionIdCell.textContent = date;
+        row.appendChild(sessionIdCell);
 
         let fNameCell = document.createElement("td");
-        fNameCell.textContent = firstName;
+        fNameCell.textContent = startTime;
         row.appendChild(fNameCell);
 
         let lNameCell = document.createElement("td");
-        lNameCell.textContent = lastName;
+        lNameCell.textContent = endTime;
         row.appendChild(lNameCell);
 
         let emailCell = document.createElement("td");
-        emailCell.textContent = email;
+        emailCell.textContent = trainer;
         row.appendChild(emailCell);
 
         let enrollmentDateCell = document.createElement("td");
-        enrollmentDateCell.textContent = enrollmentDate;
+        enrollmentDateCell.textContent = room;
         row.appendChild(enrollmentDateCell);
 
-        let deleteBtn = `<td onclick="deleteStudent(${studentID})" class="deleteBtn">Delete</td>`
+        let deleteBtn = `<td onclick="deleteSession(${sessionID})" class="deleteBtn">Delete</td>`
         row.innerHTML += deleteBtn;
 
         // Append the row to the table
-        let validation = document.getElementById(studentID);
+        let validation = document.getElementById(sessionID);
         table.appendChild(row);
     }
 }

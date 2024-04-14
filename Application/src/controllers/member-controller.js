@@ -58,7 +58,8 @@ const loginValidation = async (req, res) => {
             return;
         }
 
-        req.session.memberId = memberId;
+        req.session.memberId = rows[0].member_id;
+        console.log(req.session.memberId);
         res.status(200).json({message: "Exists"});
     } catch (err) {
         // Handle other errors
@@ -101,9 +102,9 @@ const updateMember = async (req, res) => {
         // }
 
         const result = await pool.query(queries.updateMember, [member_email, password, first_name, last_name, DOB, street, city, province, postal_Code, card_number, cvv, expiry_date, member_id]);
-
+        console.log([member_email, password, first_name, last_name, DOB, street, city, province, postal_Code, card_number, cvv, expiry_date, member_id]);
         if (result.rowCount < 1) {
-            res.status(404).json({message: "Error 404: Unabale to update member"});
+            res.status(404).json({message: "Error 404: Unable to update member"});
             return;
         }
         
@@ -234,7 +235,10 @@ const addGroupSession = async (req, res) => {
 }
 
 const getAvailableTrainers = async (req, res) => {
-    let {date, startTime, endTime} = req.body;
+    let date, startTime, endTime; 
+    date = req.query.date; 
+    startTime = req.query.startTime; 
+    endTime = req.query.endTime;
 
     startTime = new Date(date+'T' + startTime); 
     endTime   = new Date(date+'T' + endTime); 
@@ -297,7 +301,7 @@ const getAvailableTrainers = async (req, res) => {
 }
 
 const getAvailableRooms = async (req, res) => {
-    const {date} = req.body;
+    const date = req.query.date; 
 
     try {
         const {rows} = await pool.query(queries.getAvailableAllRooms, [date]);
@@ -312,11 +316,11 @@ const getAvailableRooms = async (req, res) => {
 
 const getMemberIdInSession = async (req, res) => {
     if(!req.session.memberId) {
-        res.status(400).json({message: "Error 400: No valid admin in the session"});
+        res.status(400).json({message: "Error 400: No valid member in the session"});
         return;
     }
 
-    res.status(200).json({adminId: req.session.adminId});
+    res.status(200).json({memberId: req.session.memberId});
 }
 
 module.exports = {
