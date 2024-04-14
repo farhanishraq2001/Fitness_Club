@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang = "en">
+  <head>
+    <link rel="stylesheet" href="css/students.css">
+  </head>
+
+  <body>
+    <section>
+    <h1>Member</h1>
+      <!-- <form id="addStudent">
+        <label for="fname">First name:</label>
+        <input type="text" id="fname" name="fname"><br><br>
+        <label for="lname">Last name:</label>
+        <input type="text" id="lname" name="lname"><br><br>
+        <label for="email">Email:</label>
+        <input type="text" id="email" name="email"><br><br>
+        <label for="enrollmentDate">Enrollment Date:</label>
+        <input type="date" id="enrollmentDate"><br><br>
+
+        <input type="submit" id="btnSubmitAdd" value="Submit" />
+        <input type="submit" id="btnHideAdd" value="Hide" />
+      </form> -->
+
+      <input type="button" id="btnLogin" value="Login" />
+      <input type="button" id="btnSignUp" value="Sign Up" />
+
+      <form id="addMember" style="display:none;">
+        <input type="text" id="member_email" name="member_email" placeholder="Member Email"><br><br>
+        <input type="password" id="password" name="password" placeholder="Password"><br><br>
+        <input type="text" id="fname" name="fname" placeholder="First Name"><br><br>
+        <input type="text" id="lname" name="lname" placeholder="Last Name"><br><br>
+        <label for="DOB">Date of Birth:</label>
+        <input type="date" id="DOB" name="DOB" placeholder="Date of Birth"><br><br>
+        <input type="text" id="street" name="street" placeholder="Street"><br><br>
+        <input type="text" id="city" name="city" placeholder="City"><br><br>
+        <input type="text" id="province" name="province" placeholder="Province"><br><br>
+        <input type="text" id="postal_Code" name="postal_Code" placeholder="Postal Code"><br><br>
+        <input type="text" id="card_number" name="card_number" placeholder="Card Number"><br><br>
+        <input type="text" id="cvv" name="cvv" placeholder="CVV"><br><br>
+        <label for="expiry_date">Credit Card Expiry Date:</label>
+        <input type="date" id="expiry_date" name="expiry_date" placeholder="Expiry Date"><br><br>
+    
+        <input type="button" id="btnSubmitAdd" value="Submit" />
+    </form>
+
+    <form id="updateMember" style="display:none;">
+      <input type="text" id="update_member_email" name="member_email" placeholder="Member Email"><br><br>
+      <input type="password" id="update_password" name="password" placeholder="Password"><br><br>
+      <input type="text" id="update_fname" name="fname" placeholder="First Name"><br><br>
+      <input type="text" id="update_lname" name="lname" placeholder="Last Name"><br><br>
+      <label for="DOB">Date of Birth:</label>
+      <input type="date" id="update_DOB" name="DOB" placeholder="Date of Birth"><br><br>
+      <input type="text" id="update_street" name="street" placeholder="Street"><br><br>
+      <input type="text" id="update_city" name="city" placeholder="City"><br><br>
+      <input type="text" id="update_province" name="province" placeholder="Province"><br><br>
+      <input type="text" id="update_postal_Code" name="postal_Code" placeholder="Postal Code"><br><br>
+      <input type="text" id="update_card_number" name="card_number" placeholder="Card Number"><br><br>
+      <input type="text" id="update_cvv" name="cvv" placeholder="CVV"><br><br>
+      <label for="expiry_date">Credit Card Expiry Date:</label>
+      <input type="date" id="update_expiry_date" name="expiry_date" placeholder="Expiry Date"><br><br>
+  
+      <input type="button" id="btnSubmitUpdate" value="Submit" />
+  </form>
+
+    <form id="login" style="display:none;">
+      <input type="text" id="login_member_email" name="login_member_email" placeholder="Member Email"><br><br>
+      <input type="password" id="login_password" name="login_password" placeholder="Password"><br><br>
+  
+      <input type="button" id="btnSubmitLogin" value="Submit" />
+  </form>
+
+      <form id="emailChange" style="display:none;">
+        <label for="studentId">Student ID:</label>
+        <input type="text" id="studentId" name="studentId"><br><br>
+        <label for="newEmail">Email:</label>
+        <input type="text" id="newEmail" name="newEmail"><br><br>
+
+        <input type="submit" id="btnSubmitEmail" value="Submit" />
+        <input type="submit" id="btnHideEmail" value="Hide" />
+      </form>
+
+        <div id="buttons1" style="display:none;">
+            <!-- <button type="submit" id="btnShowStudents">Show Students</button>
+            <button type="submit" id="btnAddStudents">Add Student</button>
+            <button type="submit" id="btnChangeEmail">Change Email</button> -->
+            <!-- <button type="submit" id="btnDeleteStudents">Delete Students</button> -->
+
+            <div id="students">
+              <table id="studentsTable">
+                  <!-- <tr>
+                      <th>Student ID</th>
+                      <th>First name</th>
+                      <th>Last name</th>
+                      <th>Email</th>
+                      <th>Enrollment Date</th>
+                  </tr>  -->
+              </table>
+            </div>
+        </div>
+
+        <!-- <div id="buttons1">
+            <button type="submit" id="btnShowStudents" >Home</button>
+            <button type="submit" id="btnAddStudents">Contact Us</button>
+        </div> -->
+        <!-- <div>
+            <table>
+                <tr>
+                    <th>Student ID</th>
+                    <th>First name</th>
+                    <th>Last name</th>
+                    <th>Email</th>
+                    <th>Enrollment Date</th>
+                </tr>
+            </table>
+        </div> -->
+      
+    </section>
+  </body>
+
+  <script type="text/javascript" src="js/students.js" ></script>
+</html>

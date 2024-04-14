@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang = "en">
+  <head>
+    <link rel="stylesheet" href="css/students.css">
+  </head>
+
+  <body>
+    <section>
+    <h1>Students in the database</h1>
+      <form id="addStudent" style="display:none;">
+        <label for="fname">First name:</label>
+        <input type="text" id="fname" name="fname"><br><br>
+        <label for="lname">Last name:</label>
+        <input type="text" id="lname" name="lname"><br><br>
+        <label for="email">Email:</label>
+        <input type="text" id="email" name="email"><br><br>
+        <label for="enrollmentDate">Enrollment Date:</label>
+        <input type="date" id="enrollmentDate"><br><br>
+
+        <input type="submit" id="btnSubmitAdd" value="Submit" />
+        <input type="submit" id="btnHideAdd" value="Hide" />
+      </form>
+
+      <form id="emailChange" style="display:none;">
+        <label for="studentId">Student ID:</label>
+        <input type="text" id="studentId" name="studentId"><br><br>
+        <label for="newEmail">Email:</label>
+        <input type="text" id="newEmail" name="newEmail"><br><br>
+
+        <input type="submit" id="btnSubmitEmail" value="Submit" />
+        <input type="submit" id="btnHideEmail" value="Hide" />
+      </form>
+
+        <div id="buttons1">
+            <button type="submit" id="btnShowStudents">Show Students</button>
+            <button type="submit" id="btnAddStudents">Add Student</button>
+            <button type="submit" id="btnChangeEmail">Change Email</button>
+            <!-- <button type="submit" id="btnDeleteStudents">Delete Students</button> -->
+
+            <div id="students">
+              <table id="studentsTable">
+                  <!-- <tr>
+                      <th>Student ID</th>
+                      <th>First name</th>
+                      <th>Last name</th>
+                      <th>Email</th>
+                      <th>Enrollment Date</th>
+                  </tr>  -->
+              </table>
+            </div>
+        </div>
+
+        <!-- <div id="buttons1">
+            <button type="submit" id="btnShowStudents" >Home</button>
+            <button type="submit" id="btnAddStudents">Contact Us</button>
+        </div> -->
+        <!-- <div>
+            <table>
+                <tr>
+                    <th>Student ID</th>
+                    <th>First name</th>
+                    <th>Last name</th>
+                    <th>Email</th>
+                    <th>Enrollment Date</th>
+                </tr>
+            </table>
+        </div> -->
+      
+    </section>
+  </body>
+
+  <script type="text/javascript" src="js/students.js" ></script>
+</html>

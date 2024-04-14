@@ -1,0 +1,62 @@
+body{
+    margin-left: 10%;
+  }
+  
+table{
+    background-color: #eeeeee;
+    color: white;
+    display:inline-block;
+}
+
+table td{
+    padding: 0.5em;
+    color: black;
+    text-align: center;
+}
+table th{
+    background-color: #027d79;
+    padding : 0.5em;
+    font-size: large;
+}
+
+.deleteBtn {
+    cursor: pointer;
+    background-color: rgb(250, 73, 73) !important;
+}
+
+/* Adding a student */
+form{
+    /* display:none; */
+    float: left;
+}
+
+.error{
+    background-color: #fa8176;
+}
+.valid{
+    background-color: lightgreen;
+}
+
+tr:hover:not(.deleteBtn) {
+    background-color: rgb(111, 170, 111);
+}
+
+#btnShowStudents{
+    width: 234px;
+    height: 40px;
+}
+
+#btnAddStudents{
+    width: 234px;
+    height: 40px;
+}
+
+#btnChangeEmail{
+    width: 234px;
+    height: 40px;
+}
+
+#buttons1{
+  text-align: center;
+}
+  
