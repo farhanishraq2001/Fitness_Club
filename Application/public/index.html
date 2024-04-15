@@ -72,6 +72,28 @@
       <input type="time" id="sessionStartTime" name="expiry_date"><br><br>
       <label for="expiry_date">Session end time:</label>
       <input type="time" id="sessionEndTime" name="expiry_date"><br><br>
+      
+      <input type="text" id="sessionIDHolder" value="" name="expiry_date" style="display:none;">
+      <input type="text" id="memberIDHolder" value="" name="expiry_date" style="display:none;">
+
+      <label for="selectAvailableTrainers">Select Available Trainers: </label>
+      <select id="selectAvailableTrainers" name="selectAvailableTrainers"></select><br><br>
+      <label for="selectAvailableRooms">Select Available Rooms: </label>
+      <select id="selectAvailableRooms" name="selectAvailableRooms"></select><br><br>
+  
+      <input type="button" id="btnSubmitSearch" value="Search" />
+      <input type="button" id="btnSubmitAddSched" value="Add" />
+      <input type="button" id="btnSubmitUpdateSched" value="Update" /> <br><br>
+    </form>
+    <!-- <form id="scheduleManagement" style="display:none; clear:both; margin-top: 20px;">
+      <h3>Schedule Management</h3>
+      <h4>Schedule Personal Training Session</h4>
+      <label for="DOB">Select date:</label>
+      <input type="date" id="sessionDate" name="DOB"><br><br>
+      <label for="expiry_date">Session start time:</label>
+      <input type="time" id="sessionStartTime" name="expiry_date"><br><br>
+      <label for="expiry_date">Session end time:</label>
+      <input type="time" id="sessionEndTime" name="expiry_date"><br><br>
 
       <label for="selectAvailableTrainers">Select Available Trainers: </label>
       <select id="selectAvailableTrainers" name="selectAvailableTrainers"></select><br><br>
@@ -79,7 +101,7 @@
       <select id="selectAvailableRooms" name="selectAvailableRooms"></select><br><br>
   
       <input type="button" id="btnSubmitSearch" value="Search" /><br><br>
-    </form>
+    </form> -->
 
     <form id="login" style="display:none;">
       <input type="text" id="login_member_email" name="login_member_email" placeholder="Member Email"><br><br>
@@ -88,7 +110,7 @@
       <input type="button" id="btnSubmitLogin" value="Submit" />
     </form>
 
-      <form id="emailChange" style="display:none;">
+      <!-- <form id="emailChange" style="display:none;">
         <label for="studentId">Student ID:</label>
         <input type="text" id="studentId" name="studentId"><br><br>
         <label for="newEmail">Email:</label>
@@ -96,7 +118,7 @@
 
         <input type="submit" id="btnSubmitEmail" value="Submit" />
         <input type="submit" id="btnHideEmail" value="Hide" />
-      </form>
+      </form> -->
       <br><br>
         <div id="buttons1" style="display:none; clear:both;">
             <!-- <button type="submit" id="btnShowStudents">Show Students</button>
@@ -106,7 +128,20 @@
               
             <div id="students">
               <h4>Personal Training Session Created</h4>
-              <table id="studentsTable">
+              <table id="personalSessionsTable">
+                  <!-- <tr>
+                      <th>Date</th>
+                      <th>Start Time</th>
+                      <th>End Time</th>
+                      <th>Trainer</th>
+                      <th>Room</th>
+                  </tr>  -->
+              </table>
+            </div>
+
+            <div id="groupSessions">
+              <h4>Group Training Sessions Available</h4>
+              <table id="groupSessionsTable">
                   <!-- <tr>
                       <th>Date</th>
                       <th>Start Time</th>

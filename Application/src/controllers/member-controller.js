@@ -169,8 +169,10 @@ const getAllPersonalTrainingSessions = async (req, res) => {
 }
 
 const getAllGroupTrainingSessions = async (req, res) => {
+    const id = req.query.id;
+
     try {
-        const {rows} = await pool.query(queries.getAllGroupTrainingSessions);
+        const {rows} = await pool.query(queries.getGroupTrainingSessions, [id]);
         res.status(200).json(rows);
     } catch (err) {
         // Handle other errors
@@ -218,6 +220,27 @@ const updateSession = async (req, res) => {
         // Handle other errors
         console.error('Error updating training session:', err.message);
         res.status(500).json({message: 'ERROR 500: An error occurred while updating training session.'});
+    }
+}
+
+const deleteSession = async (req, res) => {
+    const session_id = req.query.id;
+
+    // console.log([member_id,  session_id]);
+
+    try {
+        const results = await pool.query(queries.deleteSession, [session_id])
+
+        if (results.rowCount < 1) {
+            res.status(404).json({message: 'Error 404: Unable to delete session'});
+            return;
+        }
+
+        res.status(200).json({message: 'Successfully deleted session.'});
+    } catch (err) {
+        // Handle other errors
+        console.error('Error deleting training session:', err.message);
+        res.status(500).json({message: 'ERROR 500: An error occurred while deleting training session.'});
     }
 }
 
@@ -336,6 +359,7 @@ module.exports = {
     getAllGroupTrainingSessions,
     createSession,
     updateSession,
+    deleteSession,
     addGroupSession,
     getAvailableTrainers,
     getAvailableRooms,

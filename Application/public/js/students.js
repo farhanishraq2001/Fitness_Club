@@ -30,6 +30,9 @@ function initializePage(){
 
     let btnSubmitSearch = document.getElementById("btnSubmitSearch");
     btnSubmitSearch.addEventListener('click', searchSession);
+
+    document.getElementById('btnSubmitUpdateSched').addEventListener('click', updatePersonalSession);
+    document.getElementById('btnSubmitAddSched').addEventListener('click', addPersonalSession);
 }
 
 function login(event) {
@@ -102,28 +105,54 @@ function login(event) {
                     return response.json(); // Parse the JSON response
                 })
                 .then(data => {
-                    // Access the adminId from the parsed JSON data
-                    fillUpdateMember(data[0]);
-                    // console.log(adminId); // Do something with the adminId
-                    fetch("http://localhost:3000/members/getAllPersonalTrainingSessions?id="+data[0].member_id, {
-                        method: 'GET'
-                    })
-                    .then(response => {
+                    Promise.all([
+                        fetch("http://localhost:3000/members/getAllPersonalTrainingSessions?id="+data[0].member_id, {
+                            method: 'GET'
+                        }), 
+                        fetch(`http://localhost:3000/members/getAllGroupTrainingSessions?id=${data[0].member_id}`, {
+                            method: 'GET'
+                        })
+                    ])
+                    .then(responses => {
                         if (!response.ok) {
                             throw new Error('Network response was not ok');
                         }
-    
-                        console.log(response);
-                        return response.json(); // Parse the JSON response
+                        // Extract the JSON data from each response
+                        return Promise.all(responses.map(response => response.json()));
                     })
                     .then(data => {
-                        console.log(data);
-                        populatePersonalSessions(data);
+                        console.log(data[0]);
+                        populatePersonalSessions(data[0]);
+                        populateGroupSessions(data[1]);
                     })
+
                 })
                 .catch(error => {
                     console.error('There was a problem with the fetch operation:', error);
                 });
+                // .then(data => {
+                //     // Access the adminId from the parsed JSON data
+                //     fillUpdateMember(data[0]);
+                //     // console.log(adminId); // Do something with the adminId
+                //     fetch("http://localhost:3000/members/getAllPersonalTrainingSessions?id="+data[0].member_id, {
+                //         method: 'GET'
+                //     })
+                //     .then(response => {
+                //         if (!response.ok) {
+                //             throw new Error('Network response was not ok');
+                //         }
+    
+                //         console.log(response);
+                //         return response.json(); // Parse the JSON response
+                //     })
+                //     .then(data => {
+                //         console.log(data);
+                //         populatePersonalSessions(data);
+                //     })
+                // })
+                // .catch(error => {
+                //     console.error('There was a problem with the fetch operation:', error);
+                // });
 
                 
                 
@@ -358,7 +387,67 @@ function addMember(event) {
 function populatePersonalSessions(sessions) {
     console.log(sessions);
 
-    let table = document.querySelector("table");
+    let table = document.getElementById("personalSessionsTable");
+    console.log(table);
+    table.innerHTML =   `<tr>
+                            <th>Date</th>
+                            <th>Start Time</th>
+                            <th>End Time</th>
+                            <th>Trainer</th>
+                            <th>Room</th>
+                        </tr> `;
+    console.log(table);
+
+    // Iterate through all the objects in the sessions array
+    for(let session of sessions){
+        // Save the information for the current in variables
+        let sessionID = session.session_id;
+        let date = session.date.split('T')[0];
+        // date = new Date(date);
+        let startTime = session.start_time;
+        let endTime = session.end_time;
+        let trainer = session.first_name + ' ' + session.last_name;
+        let room = session.room_name;
+        
+        let row = document.createElement("tr");
+        row.id = "personalSession"+sessionID;
+
+        let sessionIdCell = document.createElement("td");
+        sessionIdCell.textContent = date;
+        row.appendChild(sessionIdCell);
+
+        let fNameCell = document.createElement("td");
+        fNameCell.textContent = startTime;
+        row.appendChild(fNameCell);
+
+        let lNameCell = document.createElement("td");
+        lNameCell.textContent = endTime;
+        row.appendChild(lNameCell);
+
+        let emailCell = document.createElement("td");
+        emailCell.textContent = trainer;
+        row.appendChild(emailCell);
+
+        let enrollmentDateCell = document.createElement("td");
+        enrollmentDateCell.textContent = room;
+        row.appendChild(enrollmentDateCell);
+
+        let deleteBtn = `<td onclick="deleteSession(${sessionID}, ${session.member_id})" class="deleteBtn">Delete</td>`
+        row.innerHTML += deleteBtn;
+
+        let updateBtn = `<td onclick="updateSession(${sessionID}, ${session.member_id})" class="updateBtn">Update</td>`
+        row.innerHTML += updateBtn;
+
+        // Append the row to the table
+        let validation = document.getElementById(sessionID);
+        table.appendChild(row);
+    }
+}
+
+function populateGroupSessions(sessions) {
+    console.log(sessions);
+
+    let table = document.getElementById("groupSessionsTable");
     console.log(table);
     table.innerHTML =   `<tr>
                             <th>Date</th>
@@ -403,11 +492,18 @@ function populatePersonalSessions(sessions) {
         enrollmentDateCell.textContent = room;
         row.appendChild(enrollmentDateCell);
 
-        let deleteBtn = `<td onclick="deleteSession(${sessionID})" class="deleteBtn">Delete</td>`
-        row.innerHTML += deleteBtn;
+        if (session.member_id != null) {
+            let addBtn = `<td onclick="addToGroupSession(${sessionID})" class="updateBtn">Already registered</td>`
+            row.innerHTML += addBtn;
+        } else {
+            let addBtn = `<td onclick="addToGroupSession(${sessionID})" class="addToGroupSessionBtn">Add group session to schedule</td>`
+            row.innerHTML += addBtn;
+        }
 
-        let updateBtn = `<td onclick="updateSession(${sessionID})" class="updateBtn">Update</td>`
-        row.innerHTML += updateBtn;
+        
+
+        // let updateBtn = `<td onclick="updateSession(${sessionID})" class="updateBtn">Update</td>`
+        // row.innerHTML += updateBtn;
 
         // Append the row to the table
         let validation = document.getElementById(sessionID);
@@ -415,8 +511,215 @@ function populatePersonalSessions(sessions) {
     }
 }
 
-function updateSession(id) {
+function updateSession(id, memberId) {
     console.log("Delete session with id: "+id);
+    document.getElementById("sessionIDHolder").setAttribute("value", id);
+    document.getElementById("memberIDHolder").setAttribute("value", memberId);
+
+    let personalSessionForUpdate = document.getElementById("personalSession"+id);
+
+    let date = personalSessionForUpdate.childNodes[0].innerHTML;
+    let start_time = personalSessionForUpdate.childNodes[1].innerHTML;
+    let end_time = personalSessionForUpdate.childNodes[2].innerHTML;
+
+    let obj = {
+        date: date,
+        start_time: start_time,
+        end_time: end_time
+    }
+
+    // date = new Date(date);
+
+    let sessionDate = document.getElementById("sessionDate");
+    sessionDate.value = date;
+    let sessionStartTime = document.getElementById("sessionStartTime")
+    sessionStartTime.value = start_time;
+    let sessionEndTime = document.getElementById("sessionEndTime");
+    sessionEndTime.value = end_time;
+
+    document.getElementById('selectAvailableTrainers').innerHTML = '';
+    document.getElementById('selectAvailableRooms').innerHTML = '';
+
+    console.log(document.getElementById("sessionIDHolder"));
+}
+
+function addPersonalSession() {
+    let session_id = parseInt(document.getElementById("sessionIDHolder").getAttribute('value'));
+    let date = document.getElementById("sessionDate").value;
+    let start_time = document.getElementById("sessionStartTime").value;
+    let end_time = document.getElementById("sessionEndTime").value;
+    let session_type = 'personal';
+    let trainers = document.getElementById('selectAvailableTrainers');
+    let trainer_id = parseInt(trainers.options[trainers.selectedIndex].id);
+    let rooms = document.getElementById('selectAvailableRooms');
+    let room_id = parseInt(rooms.options[rooms.selectedIndex].id);
+
+    let member_id = parseInt(document.getElementById("memberIDHolder").getAttribute('value'));
+
+    let obj = {
+        date: date,
+        start_time: start_time,
+        end_time: end_time,
+        session_type: session_type,
+        trainer_id: trainer_id,
+        room_id: room_id,
+        member_id: member_id,
+    }
+
+    fetch('http://localhost:3000/members/createSession', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(obj)
+    })
+    .then(response => {
+        if(!response.ok) {
+            return response.json().then(message => {
+                window.alert(message.message);
+            });
+        }
+
+        return response.json().then(message => {
+            window.alert(message.message);
+        });
+    })
+    .then(data => {
+        fetch("http://localhost:3000/members/getAllPersonalTrainingSessions?id="+member_id, {
+            method: 'GET'
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+
+            console.log(response);
+            return response.json(); // Parse the JSON response
+        })
+        .then(data => {
+            console.log(data);
+            populatePersonalSessions(data);
+        })
+        .catch(error => {
+            console.error('There was a problem with the fetch operation:', error);
+        })
+    })
+    .catch(error => console.error('Error:', error));
+}
+
+function updatePersonalSession() {
+    let session_id = parseInt(document.getElementById("sessionIDHolder").getAttribute('value'));
+    let date = document.getElementById("sessionDate").value;
+    let start_time = document.getElementById("sessionStartTime").value;
+    let end_time = document.getElementById("sessionEndTime").value;
+    let session_type = 'personal';
+    let trainers = document.getElementById('selectAvailableTrainers');
+    let trainer_id = parseInt(trainers.options[trainers.selectedIndex].id);
+    let rooms = document.getElementById('selectAvailableRooms');
+    let room_id = parseInt(rooms.options[rooms.selectedIndex].id);
+
+    let member_id = parseInt(document.getElementById("memberIDHolder").getAttribute('value'));
+
+    let obj = {
+        session_id: session_id,
+        date: date,
+        start_time: start_time,
+        end_time: end_time,
+        session_type: session_type,
+        trainer_id: trainer_id,
+        room_id: room_id
+    }
+
+    fetch('http://localhost:3000/members/updateSession', {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(obj)
+    })
+    .then(response => {
+        if(!response.ok) {
+            return response.json().then(message => {
+                window.alert(message.message);
+            });
+        }
+
+        return response.json().then(message => {
+            window.alert(message.message);
+        });
+    })
+    .then(data => {
+        fetch("http://localhost:3000/members/getAllPersonalTrainingSessions?id="+member_id, {
+            method: 'GET'
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+
+            console.log(response);
+            return response.json(); // Parse the JSON response
+        })
+        .then(data => {
+            console.log(data);
+            populatePersonalSessions(data);
+        })
+        .catch(error => {
+            console.error('There was a problem with the fetch operation:', error);
+        })
+    })
+    .catch(error => console.error('Error:', error));
+}
+
+function deleteSession(session_id, member_id) {
+
+    let obj = {
+        member_id: member_id,
+        session_id: session_id
+    }
+
+    fetch(`http://localhost:3000/members/deleteSession?id=${session_id}`, {
+        method: 'DELETE'
+    })
+    .then(response => {
+        if (!response.ok) {
+            return response.json().then(message => {
+                window.alert(message.message);
+                throw new Error(message.message);
+            });
+        }
+        return response.json().then(message => {
+            window.alert(message.message);
+        });
+    })
+    .then(data => {
+        fetch("http://localhost:3000/members/getAllPersonalTrainingSessions?id="+member_id, {
+            method: 'GET'
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+
+            console.log(response);
+            return response.json(); // Parse the JSON response
+        })
+        .then(data => {
+            console.log(data);
+            populatePersonalSessions(data);
+        })
+        .catch(error => {
+            console.error('There was a problem with the fetch operation:', error);
+        })
+    })
+    .catch(error => console.error('Error:', error));
+
+    console.log(obj);
+
+}
+
+function addToGroupSession(id) {
+    console.log("Add session with id: "+id);
 }
 
 // Adds to student DB by making a POST request to the REST api created

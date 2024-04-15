@@ -41,26 +41,29 @@ const getAllPersonalTrainingSessions = `SELECT *
                                     ON r.room_id=t.room_id
                                 WHERE member_id=$1 AND session_type='personal'
                                 ORDER BY date DESC;`;  
-const getGroupTrainingSessions =   `SELECT ts.*, ms.member_id
-                                    FROM Training_sessions ts
-                                    LEFT JOIN (
-                                        SELECT session_id, member_id
-                                        FROM Members_schedule
-                                        WHERE member_id = $1
-                                    ) AS ms ON ts.session_id = ms.session_id
-                                    WHERE ts.session_type = 'group'
-                                    AND (ms.session_id IS NOT NULL
-                                        OR NOT EXISTS (
-                                            SELECT 1
-                                            FROM Members_schedule
-                                            WHERE session_id = ts.session_id
-                                                AND member_id = $1
-                                    ))
-                                    ORDER BY date DESC;`;
+const getGroupTrainingSessions =   `SELECT ts.*, ms.member_id, t.first_name, t.last_name, r.room_name
+FROM Training_sessions ts
+LEFT JOIN (
+    SELECT session_id, member_id
+    FROM Members_schedule
+    WHERE member_id = $1
+) AS ms ON ts.session_id = ms.session_id
+LEFT JOIN trainers t ON ts.trainer_id = t.trainer_id
+LEFT JOIN rooms r ON ts.room_id = r.room_id
+WHERE ts.session_type = 'group'
+AND (ms.session_id IS NOT NULL
+OR NOT EXISTS (
+    SELECT 1
+    FROM Members_schedule
+    WHERE session_id = ts.session_id
+        AND member_id = $1
+))
+ORDER BY date DESC;`;
 const createSession = `INSERT INTO training_sessions(date, start_time, end_time, session_type, trainer_id, room_id) VALUES ($1, $2, $3, $4, $5, $6) RETURNING session_id`;
 const updateSession =  `UPDATE training_sessions
                         SET date=$2, start_time=$3, end_time=$4, session_type=$5, trainer_id=$6, room_id=$7
                         WHERE session_id=$1;`;
+const deleteSession =  `DELETE FROM training_sessions WHERE session_id = $1;`
 const addToMembersSchedule = `INSERT INTO members_schedule(member_id, session_id) VALUES ($1, $2) RETURNING session_id`;
 const getAllGroupTrainingSessions = `SELECT * FROM training_sessions WHERE session_type='group'`;
 
@@ -134,10 +137,12 @@ module.exports = {
     getTrainingSessions,
     createSession,
     updateSession,
+    deleteSession,
     addToMembersSchedule,
     getAllPersonalTrainingSessions,
     getAllGroupTrainingSessions,
     getAllTrainingSessions,
+    getGroupTrainingSessions,
 
     trainerBreakForTheDay,
     getTrainerWithMaxSessions,

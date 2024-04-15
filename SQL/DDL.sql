@@ -101,7 +101,7 @@ CREATE TABLE Training_sessions (
 -- Members Schedule
 CREATE TABLE Members_schedule (
     member_id INTEGER REFERENCES Members(member_id),
-    session_id INTEGER REFERENCES Training_sessions(session_id),
+    session_id INTEGER REFERENCES Training_sessions(session_id) ON DELETE CASCADE,
     PRIMARY KEY (member_id, session_id)
 );
 
@@ -129,5 +129,5 @@ CREATE TABLE Billing (
     type VARCHAR(255) NOT NULL,
     date_paid DATE NOT NULL,
     paid_by INTEGER REFERENCES Members(member_id),
-    session_id INTEGER REFERENCES Training_sessions(session_id)
+    session_id INTEGER REFERENCES Training_sessions(session_id) ON DELETE CASCADE
 );

@@ -29,6 +29,11 @@ table th{
     background-color: rgb(255, 238, 0) !important;
 }
 
+.addToGroupSessionBtn {
+    cursor: pointer;
+    background-color: rgb(0, 255, 13) !important;
+}
+
 /* Adding a student */
 form{
     /* display:none; */
