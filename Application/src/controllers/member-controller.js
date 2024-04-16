@@ -245,9 +245,19 @@ const deleteSession = async (req, res) => {
 }
 
 const addGroupSession = async (req, res) => {
-    const {member_id, session_id} = req.body;
-
+    let {member_id, session_id, date, start_time, end_time} = req.body;
+    
     try {
+        const {rows} = await pool.query(queries.getTrainingSessions, [date, start_time, member_id]);
+        console.log(rows.length);
+        
+        if (rows.length > 0) {
+            res.status(409).json({message: `Error 409: You already have a training session in ${date} at ${start_time}`});
+            return;
+        }
+
+        // const result = await pool.query(queries.createSession, [date, start_time, end_time, session_type, trainer_id, room_id]);
+
         await pool.query(queries.addToMembersSchedule, [member_id, session_id]);
         res.status(200).json({message: "Successfully added to group session"});
     } catch (err) {

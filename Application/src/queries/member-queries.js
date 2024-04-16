@@ -68,6 +68,10 @@ const addToMembersSchedule = `INSERT INTO members_schedule(member_id, session_id
 const getAllGroupTrainingSessions = `SELECT * FROM training_sessions WHERE session_type='group'`;
 
 const trainerBreakForTheDay = `SELECT * FROM trainers_schedule WHERE date=$1`;
+const allTrainingSessions = `SELECT *
+                            FROM training_sessions t
+                            LEFT JOIN members_schedule m ON m.session_id=t.session_id
+                            WHERE m.member_id=$1`
 const getAllTrainingSessions = `SELECT ts.*
                                 FROM training_sessions ts
                                 JOIN (
@@ -76,7 +80,8 @@ const getAllTrainingSessions = `SELECT ts.*
                                     WHERE date = $1
                                     GROUP BY trainer_id
                                     HAVING COUNT(*) <= 1
-                                ) AS filtered_trainers ON ts.trainer_id = filtered_trainers.trainer_id;`;
+                                ) AS filtered_trainers ON ts.trainer_id = filtered_trainers.trainer_id
+                                WHERE date = $1;`;
 const getTrainerWithMaxSessions =  `SELECT ts.*
                                     FROM training_sessions ts
                                     JOIN (
@@ -99,6 +104,10 @@ const timeConflict = (date, start1, end1, start2, end2) => {
     // Convert time strings to Date objects
 
     // console.log(date + ' ' + start1 + ' ' + end1 + ' ' + start2 + ' ' + end2)
+    console.log(date);
+    console.log(start1);
+    console.log(end1);
+    console.log();
     const startTime1 = (start1);
     const endTime1 = (end1);
     const startTime2 = (start2);
@@ -148,6 +157,8 @@ module.exports = {
     getTrainerWithMaxSessions,
     getAllTrainers,
     getAvailableAllRooms,
+
+    allTrainingSessions,
 
     timeConflict
 };

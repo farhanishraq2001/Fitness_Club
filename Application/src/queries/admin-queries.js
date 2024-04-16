@@ -49,7 +49,8 @@ const getAllTrainingSessions = `SELECT ts.*
                                     WHERE date = $1
                                     GROUP BY trainer_id
                                     HAVING COUNT(*) <= 1
-                                ) AS filtered_trainers ON ts.trainer_id = filtered_trainers.trainer_id;`;
+                                ) AS filtered_trainers ON ts.trainer_id = filtered_trainers.trainer_id;
+                                WHERE date = $1`;
 const getTrainerWithMaxSessions = `SELECT ts.*
                                 FROM training_sessions ts
                                 JOIN (

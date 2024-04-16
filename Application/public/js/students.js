@@ -274,13 +274,20 @@ function searchSession() {
     let scheduleManagement = document.getElementById("scheduleManagement");
 
     let sessionDate = document.getElementById("sessionDate").value.trim();
-    let sessionStartTime = document.getElementById("sessionStartTime").value.trim();
-    let sessionEndTime = document.getElementById("sessionEndTime").value.trim();
+    let sessionStartTime = document.getElementById("sessionStartTime").value;
+    let sessionEndTime = document.getElementById("sessionEndTime").value;
 
-    let searchParams = {};
-    searchParams.date = sessionDate;
-    searchParams.startTime = sessionStartTime+':00';
-    searchParams.endTime = sessionEndTime+':00';
+    console.log(sessionStartTime);
+    console.log(sessionEndTime);
+
+    let searchParams = {
+        date: sessionDate,
+        startTime: sessionStartTime+':00',
+        endTime: sessionEndTime+':00'
+    };
+
+    // console.log(searchParams);
+    // console.log(sessionEndTime);
 
     console.log(searchParams);
 
@@ -306,7 +313,7 @@ function searchSession() {
     .then(data => {
         // Handle the data from both URLs
         const data1 = data[0];
-        console.log('Data from URL 1:', data1);
+        // console.log('Data from URL 1:', data1);
         let select = document.getElementById("selectAvailableTrainers");
         select.innerHTML = '';
         data[0].forEach(i => {
@@ -317,7 +324,7 @@ function searchSession() {
         });
 
         const data2 = data[1];
-        console.log('Data from URL 2:', data2);
+        // console.log('Data from URL 2:', data2);
         select = document.getElementById("selectAvailableRooms");
         select.innerHTML = '';
         data[1].forEach(i => {
@@ -524,23 +531,25 @@ function updateSession(id, memberId) {
 
     let obj = {
         date: date,
-        start_time: start_time,
-        end_time: end_time
+        start_time: start_time.slice(0, -3),
+        end_time: end_time.slice(0, -3)
     }
 
     // date = new Date(date);
 
+    // console.log(obj);
+
     let sessionDate = document.getElementById("sessionDate");
-    sessionDate.value = date;
+    sessionDate.value = obj.date;
     let sessionStartTime = document.getElementById("sessionStartTime")
-    sessionStartTime.value = start_time;
+    sessionStartTime.value = obj.start_time;
     let sessionEndTime = document.getElementById("sessionEndTime");
-    sessionEndTime.value = end_time;
+    sessionEndTime.value = obj.end_time;
 
     document.getElementById('selectAvailableTrainers').innerHTML = '';
     document.getElementById('selectAvailableRooms').innerHTML = '';
 
-    console.log(document.getElementById("sessionIDHolder"));
+    // console.log(document.getElementById("sessionIDHolder"));
 }
 
 function addPersonalSession() {
