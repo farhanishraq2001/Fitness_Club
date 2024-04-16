@@ -31,6 +31,11 @@ const getTrainingSessions = `SELECT *
                             LEFT JOIN members_schedule m
                                 ON m.session_id=t.session_id
                             WHERE date=$1 AND start_time=$2 AND member_id=$3;`;
+const getTrainingSessionsByDate  = `SELECT *
+FROM training_sessions t
+LEFT JOIN members_schedule m
+    ON m.session_id=t.session_id
+WHERE date=$1 AND member_id=$2;`;
 const getAllPersonalTrainingSessions = `SELECT *
                                 FROM training_sessions t
                                 LEFT JOIN members_schedule m
@@ -107,7 +112,9 @@ const timeConflict = (date, start1, end1, start2, end2) => {
     console.log(date);
     console.log(start1);
     console.log(end1);
-    console.log();
+    console.log('Time 2');
+    console.log(start2);
+    console.log(end2);
     const startTime1 = (start1);
     const endTime1 = (end1);
     const startTime2 = (start2);
@@ -144,6 +151,7 @@ module.exports = {
     getFitnessGoals,
     addFitnessGoals,
     getTrainingSessions,
+    getTrainingSessionsByDate,
     createSession,
     updateSession,
     deleteSession,
