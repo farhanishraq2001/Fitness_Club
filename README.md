@@ -31,4 +31,4 @@ Inside the Application folder create the dev.env file, add appropriate fields as
 While having pgAdmin4 open, open the Student-SQLDB-Application folder in the VSCode, then open the Application folder integrated terminal and then type node server.js and hit enter as shown in the video You can do this step using other terminals as well, you just have to make sure to be in the ..\Fitness_Club\Application directory
 Now the server should be running at localhost:3000/members You can now interact with the server
 To end the server, simply head back to the terminal where you typed node server.js. Here hold control + c (for Windows) or command + c (for Mac) on your keyboard
-Video Demo showcasing the application being run: (https://youtu.be/RiQ7kPFN4eM)
+Video Demo showcasing the application being run: (https://youtu.be/mtuBgUhp274)
